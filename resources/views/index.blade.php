@@ -1,9 +1,9 @@
-<h1>
-    Your Personal Task Overview
-</h1>
+@extends('layouts.app')
 
-<div>
+@section('title', 'Your Personal Task Overview')
 
+@section('content')
+    
     @forelse ($tasks as $task)
         <div>
             <a href="{{ route('tasks.show',['id'=>$task-> id]) }}">{{ $task->title }}</a>
@@ -12,4 +12,4 @@
         <div>You have no tasks yet.<div>
     @endforelse 
 
-</div>
+@endsection
