@@ -1,58 +1,319 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# My Task Manager
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A simple task management web application built with **Laravel**. The application allows users to create, view, edit, complete, and delete tasks through a clean and responsive interface.
 
-## About Laravel
+This project was built as a practical Laravel project to learn and demonstrate core concepts such as **routing, Blade templates, Eloquent ORM, form validation, migrations, CRUD operations, and database integration**.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Features
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+* Create new tasks
+* View a list of tasks
+* View individual task details
+* Edit existing tasks
+* Mark tasks as completed or incomplete
+* Delete tasks
+* Form validation with helpful error messages
+* Pagination for task lists
+* Success notifications after actions
+* Responsive user interface
+* SQLite database support
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Tech Stack
 
-## Learning Laravel
+* **PHP 8.3+**
+* **Laravel 13**
+* **SQLite**
+* **Blade**
+* **Eloquent ORM**
+* **Tailwind CSS**
+* **Alpine.js**
+* **Vite**
+* **Composer**
+* **npm**
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+The project requires PHP `^8.3` and Laravel `^13.17`.
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Application Overview
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+The application is centered around a `Task` model. Each task contains:
 
-## Agentic Development
+* Title
+* Short description
+* Detailed description
+* Completion status
+* Created timestamp
+* Updated timestamp
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+The database migration defines the task table with these fields and sets newly created tasks to incomplete by default.
 
-```bash
-composer require laravel/boost --dev
+## CRUD Functionality
 
-php artisan boost:install
+### Create
+
+Users can create a task by providing:
+
+* Task name
+* Brief description
+* Detailed description
+
+The application validates the submitted data before creating the task in the database.
+
+### Read
+
+The application provides:
+
+* A paginated task overview
+* Individual task detail pages
+
+Tasks on the overview page are ordered by the most recently created.
+
+### Update
+
+Existing tasks can be edited through the task edit page. The same validation rules are applied when updating a task.
+
+### Complete / Incomplete
+
+Tasks can be toggled between completed and incomplete. The `Task` model contains a `toggleComplete()` method that changes the completion state and saves the updated model.
+
+### Delete
+
+Tasks can be permanently deleted from their individual task page.
+
+## Validation
+
+Task submissions are handled through a dedicated `TaskRequest` form request.
+
+The current validation rules require:
+
+* `title` — required, maximum 255 characters
+* `description` — required
+* `long_description` — required
+
+## Project Structure
+
+```text
+my-task-manager/
+├── app/
+│   ├── Http/
+│   │   └── Requests/
+│   │       └── TaskRequest.php
+│   ├── Models/
+│   │   └── Task.php
+│   └── Providers/
+│
+├── bootstrap/
+│
+├── config/
+│
+├── database/
+│   ├── factories/
+│   ├── migrations/
+│   │   └── 2026_08_22_121823_create_tasks_table.php
+│   └── seeders/
+│
+├── public/
+│
+├── resources/
+│   └── views/
+│       ├── layouts/
+│       │   └── app.blade.php
+│       ├── create.blade.php
+│       ├── edit.blade.php
+│       ├── form.blade.php
+│       ├── index.blade.php
+│       └── show.blade.php
+│
+├── routes/
+│   └── web.php
+│
+├── storage/
+├── tests/
+├── .env.example
+├── artisan
+├── composer.json
+├── package.json
+└── vite.config.js
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+## Routes
 
-## Contributing
+The application uses Laravel web routes for task management.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+| Method | Route                          | Purpose                      |
+| ------ | ------------------------------ | ---------------------------- |
+| GET    | `/`                            | Redirects to the task list   |
+| GET    | `/tasks`                       | Display all tasks            |
+| GET    | `/tasks/create`                | Display the create task form |
+| POST   | `/tasks`                       | Create a task                |
+| GET    | `/tasks/{task}`                | Display a task               |
+| GET    | `/tasks/{task}/edit`           | Display the edit form        |
+| PUT    | `/tasks/{task}`                | Update a task                |
+| DELETE | `/tasks/{task}`                | Delete a task                |
+| PUT    | `/task/{task}/toggle-complete` | Toggle completion status     |
 
-## Code of Conduct
+These routes use Laravel's route model binding for individual tasks.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## Getting Started
 
-## Security Vulnerabilities
+### Prerequisites
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Make sure you have the following installed:
+
+* PHP 8.3 or higher
+* Composer
+* Node.js and npm
+* SQLite
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/kalonjic34/my-task-manager.git
+cd my-task-manager
+```
+
+### 2. Install PHP dependencies
+
+```bash
+composer install
+```
+
+### 3. Create the environment file
+
+```bash
+cp .env.example .env
+```
+
+On Windows Command Prompt, you can use:
+
+```cmd
+copy .env.example .env
+```
+
+The project is configured to use SQLite by default.
+
+### 4. Generate the application key
+
+```bash
+php artisan key:generate
+```
+
+### 5. Create the SQLite database
+
+If `database/database.sqlite` does not already exist, create an empty file:
+
+```bash
+touch database/database.sqlite
+```
+
+On Windows Command Prompt:
+
+```cmd
+type nul > database\database.sqlite
+```
+
+### 6. Run migrations
+
+```bash
+php artisan migrate
+```
+
+This creates the application's database tables, including the `tasks` table.
+
+### 7. Install frontend dependencies
+
+```bash
+npm install
+```
+
+### 8. Start the development server
+
+In one terminal:
+
+```bash
+php artisan serve
+```
+
+Then open:
+
+```text
+http://127.0.0.1:8000
+```
+
+For frontend asset development, run:
+
+```bash
+npm run dev
+```
+
+## Alternative Setup
+
+The repository's Composer configuration also includes a setup script that can automate the initial installation process:
+
+```bash
+composer run setup
+```
+
+The script installs PHP dependencies, creates the environment file if necessary, generates the application key, runs migrations, installs npm dependencies, and builds the frontend assets.
+
+## UI
+
+The application uses Blade templates for its interface, with Tailwind CSS utility classes for styling and Alpine.js for small interactive elements such as dismissible success notifications.
+
+The interface includes:
+
+* Task overview
+* Task creation form
+* Task editing form
+* Individual task pages
+* Completion status indicators
+* Success notifications
+* Pagination
+
+## What I Learned
+
+Building this project provided practical experience with several Laravel concepts:
+
+* Laravel project structure
+* Routing
+* Route model binding
+* Blade templating
+* Layouts and reusable views
+* Eloquent models
+* Mass assignment
+* Form requests
+* Validation
+* Database migrations
+* SQLite
+* CRUD operations
+* HTTP methods
+* CSRF protection
+* Pagination
+* Flash session messages
+* Tailwind CSS
+* Alpine.js
+* Vite
+
+## Future Improvements
+
+Potential improvements for future versions include:
+
+* User authentication
+* User-specific tasks
+* Task priorities
+* Task categories
+* Due dates
+* Search and filtering
+* Task sorting
+* Better automated test coverage
+* API endpoints
+* MySQL/PostgreSQL support
+* Improved UI and accessibility
+* Deployment to a production environment
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+This project is intended as a learning and portfolio project.
+
+---
+
+**Built with Laravel, PHP, Blade, Eloquent, SQLite, Tailwind CSS, and Alpine.js.**
